@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            background-color: black;
+            color: white;
+            font-size: 2em;
+            text-align: center;
+            overflow: hidden;
+        }
+        .circle {
+            width: 100px;
+            height: 100px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            position: absolute;
+        }
+        .triangle {
+            width: 0;
+            height: 0;
+            border-left: 30px solid black;
+            border-top: 20px solid transparent;
+            border-bottom: 20px solid transparent;
+        }
+        .text, .cake, .images, .confetti {
+            display: none;
+        }
+        .cake {
+            width: 120px;
+            height: 130px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .cake-layer {
+            width: 100%;
+            position: absolute;
+            left: 0;
+            border-radius: 10px;
+        }
+        .layer1 { background: pink; top: 0; height: 30px; }
+        .layer2 { background: white; top: 30px; height: 25px; }
+        .layer-band { background: #FF1493; top: 55px; height: 8px; position: absolute; width: 100%; border-radius: 10px; z-index: 1; }
+        .layer3 { background: #D2B48C; top: 60px; height: 15px; }
+        .layer4 { background: pink; top: 75px; height: 30px; }
+        .candle-container {
+            position: absolute;
+            top: -80px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .candle {
+            width: 15px;
+            height: 80px;
+            background-color: white;
+            border-radius: 10px;
+            position: relative;
+        }
+        .flame {
+            width: 15px;
+            height: 40px;
+            background: radial-gradient(circle, pink, deeppink, transparent);
+            border-radius: 50% 50% 40% 40%;
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%) rotate(5deg);
+            opacity: 1;
+            animation: flicker 0.2s infinite alternate;
+        }
+        .images img {
+            width: 35%;
+            margin: 30px;
+        }
+        @keyframes flicker {
+            0% { transform: translateX(-50%) rotate(5deg) scale(1); }
+            100% { transform: translateX(-50%) rotate(-5deg) scale(1.05); }
+        }
+        .fade-out {
+            transition: opacity 1s ease-out;
+            opacity: 0;
+        }
+        .flower {
+            position: absolute;
+            top: -80px;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            opacity: 0;
+            transition: transform 2s ease-out, opacity 2s ease-out;
+        }
+        .flower.show {
+            transform: translateX(-50%) scale(1);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div id="circle" class="circle"><div class="triangle"></div></div>
+    <audio id="bg-music" loop>
+        <source src="birthday_song.mp3" type="audio/mpeg">
+    </audio>
+    
+    <div id="text1" class="text">Dear Arwen</div>
+    <div id="text2" class="text">It's your 19th birthday today!!</div>
+    <div id="text3" class="text">Be brave and keep loving</div>
+    
+    <div id="cake" class="cake" style="display: none;">
+        <div class="cake-layer layer1"></div>
+        <div class="cake-layer layer2"></div>
+        <div class="cake-layer layer-band"></div>
+        <div class="cake-layer layer3"></div>
+        <div class="cake-layer layer4"></div>
+        <div id="candle-container" class="candle-container">
+            <div class="candle">
+                <div id="flame" class="flame"></div>
+            </div>
+            <div id="flower" class="flower">🌸</div>
+        </div>
+    </div>
+    
+    <div id="images" class="images">
+        <img src="a1.jpg" alt="Image 1">
+        <img src="a2.jpg" alt="Image 2">
+    </div>
+    
+    <script>
+        function playMusic() {
+            document.getElementById('bg-music').play();
+        }
+        function showText(id, delay, nextFunc) {
+            setTimeout(() => {
+                let elem = document.getElementById(id);
+                elem.style.display = 'block';
+                elem.style.opacity = '1';
+                elem.style.transition = 'opacity 1s ease-out';
+                setTimeout(() => {
+                    elem.style.opacity = '0';
+                    setTimeout(() => {
+                        elem.style.display = 'none';
+                        if (nextFunc) nextFunc();
+                    }, 2000);
+                }, 5000);
+            }, delay);
+        }
+        document.getElementById("circle").addEventListener("click", function() {
+            this.style.display = "none";
+            playMusic();
+            showText('text1', 0, () => {
+                showText('text2', 0, () => {
+                    showText('text3', 0, () => {
+                        document.getElementById('cake').style.display = 'flex';
+                        setTimeout(() => {
+                            document.getElementById('cake').classList.add('fade-out');
+                            setTimeout(() => {
+                                document.getElementById('cake').style.display = 'none';
+                                document.getElementById('images').style.display = 'flex';
+                            }, 2000);
+                        }, 5000);
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
